@@ -1,6 +1,9 @@
-name: Java CI
+name:
 
-on: [push]
+on:
+  push:
+    tags:
+      - '*'
 
 jobs:
   build:
@@ -16,12 +19,21 @@ jobs:
 
       - name: Maven Build
         run: |
-          mvn -B clean package
-          mkdir staging
-          cp target/*.jar staging
+          mvn versions:set -DremoveSnapshot
+          mvn -B clean package test
+          mkdir release
+          cp target/*.jar release
 
       - name: Artifact Upload
         uses: actions/upload-artifact@v2
         with:
           name: Package
-          path: staging
+          path: release
+
+      - name: Make Release
+        uses: softprops/action-gh-release@v0.1.5
+        with:
+          files:
+            target/*.jar
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
