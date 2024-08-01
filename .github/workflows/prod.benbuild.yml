@@ -1,10 +1,7 @@
-name:
+name: JAVA CI PROD
 
-on:
-  push:
-    tags:
-      - '*'
-
+on: [push]
+  
 jobs:
   build:
     runs-on: ubuntu-latest
